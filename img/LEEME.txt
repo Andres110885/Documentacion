@@ -1,0 +1,19 @@
+CARPETA DE FOTOS
+================
+Pon aquí las fotos de los documentos. El nombre del archivo tiene que ser:
+
+   persona_documento_lado.jpg
+
+La propia app te muestra el nombre exacto en cada hueco vacío.
+
+Personas:  andres, leo, miah, alex
+
+Ejemplos:
+   andres_dni_frente.jpg
+   andres_dni_reverso.jpg
+   andres_pasaporte_unico.jpg
+   leo_fotocole_unico.jpg
+   miah_sanitaria_frente.jpg
+
+Vale jpg, jpeg, png o webp. Recomendado: jpg.
+Cuando añadas una foto con el nombre correcto, aparecerá sola en la app.

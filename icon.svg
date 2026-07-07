@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0ea5e9"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e2e8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- carpeta trasera -->
+  <path d="M118 150h96l30 34h150a24 24 0 0 1 24 24v170a24 24 0 0 1-24 24H118a24 24 0 0 1-24-24V174a24 24 0 0 1 24-24z" fill="#0b3a66" opacity="0.35"/>
+  <!-- tarjeta/documento -->
+  <rect x="128" y="196" width="256" height="168" rx="20" fill="url(#card)"/>
+  <!-- foto -->
+  <circle cx="196" cy="252" r="30" fill="#0ea5e9"/>
+  <path d="M158 320c0-24 18-40 38-40s38 16 38 40z" fill="#0ea5e9"/>
+  <!-- lineas de texto -->
+  <rect x="258" y="232" width="96" height="14" rx="7" fill="#94a3b8"/>
+  <rect x="258" y="262" width="80" height="12" rx="6" fill="#cbd5e1"/>
+  <rect x="258" y="288" width="96" height="12" rx="6" fill="#cbd5e1"/>
+  <!-- candado -->
+  <g transform="translate(330 300)">
+    <rect x="0" y="26" width="72" height="56" rx="14" fill="#f59e0b"/>
+    <path d="M14 26v-10a22 22 0 0 1 44 0v10" fill="none" stroke="#f59e0b" stroke-width="12"/>
+    <circle cx="36" cy="50" r="8" fill="#7c3a00"/>
+    <rect x="32" y="54" width="8" height="16" rx="4" fill="#7c3a00"/>
+  </g>
+</svg>

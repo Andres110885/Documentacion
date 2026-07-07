@@ -1,0 +1,20 @@
+# No subir NADA con datos personales al repositorio.
+# La app (index.html + iconos) sí se sube; las fotos y copias NO.
+
+# Copia de datos exportada desde la app
+documentacion-copia.json
+*.json
+
+# Fotos y PDFs de documentos (si alguna vez pones archivos en img/)
+img/*.jpg
+img/*.jpeg
+img/*.png
+img/*.webp
+img/*.gif
+img/*.pdf
+img/*.JPG
+img/*.JPEG
+img/*.PNG
+img/*.PDF
+
+# (Se mantienen: index.html, icon.svg, icon-192.png, icon-512.png, README.md, img/LEEME.txt)

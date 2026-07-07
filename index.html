@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+<meta name="theme-color" content="#0f172a">
+<title>Documentación</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root{
+    --bg:#0f172a; --bg2:#1e293b; --card:#1e293b; --card2:#273449;
+    --txt:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --accent2:#0ea5e9;
+    --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444; --line:#334155;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0; padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--txt); min-height:100vh;
+  }
+  header{
+    position:sticky; top:0; z-index:20;
+    background:rgba(15,23,42,.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:10px; padding:14px 16px;
+  }
+  header .logo{width:30px;height:30px;flex:0 0 auto}
+  header h1{font-size:19px; margin:0; font-weight:700; letter-spacing:.2px; flex:1}
+  .icon-btn{
+    background:var(--card2); border:1px solid var(--line); color:var(--txt);
+    min-width:40px;height:40px;border-radius:12px; font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; padding:0 10px; gap:6px;
+  }
+  .icon-btn:active{transform:scale(.94)}
+  main{max-width:760px; margin:0 auto; padding:16px 16px 60px}
+  .back{
+    display:inline-flex; align-items:center; gap:6px; background:none; border:none;
+    color:var(--accent); font-size:16px; cursor:pointer; padding:6px 0; margin-bottom:6px;
+  }
+  .subtitle{color:var(--muted); font-size:14px; margin:2px 0 18px}
+
+  /* Home grid */
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+  .person-card{
+    background:var(--card); border:1px solid var(--line); border-radius:18px;
+    padding:18px 16px; cursor:pointer; text-align:left; color:inherit;
+    display:flex; flex-direction:column; gap:12px; transition:.15s;
+  }
+  .person-card:active{transform:scale(.97)}
+  .avatar{
+    width:52px;height:52px;border-radius:50%; display:flex;align-items:center;justify-content:center;
+    font-size:22px; font-weight:700; color:#0f172a; overflow:hidden;
+  }
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .person-card h2{margin:0; font-size:17px}
+  .person-card .role{color:var(--muted); font-size:13px; margin-top:-6px}
+  .progress{margin-top:auto}
+  .bar{height:7px; background:var(--card2); border-radius:99px; overflow:hidden}
+  .bar > span{display:block; height:100%; background:var(--ok); border-radius:99px; transition:width .3s}
+  .progress small{color:var(--muted); font-size:12px; display:block; margin-top:6px}
+
+  /* Doc list */
+  .doc{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:14px; margin-bottom:14px;
+  }
+  .doc-head{display:flex; align-items:center; gap:10px; margin-bottom:12px}
+  .doc-head h3{margin:0; font-size:16px; flex:1}
+  .doc-emoji{font-size:20px}
+  .chip{font-size:11px; padding:3px 9px; border-radius:99px; font-weight:600}
+  .chip.ok{background:rgba(34,197,94,.15); color:#4ade80}
+  .chip.miss{background:rgba(245,158,11,.15); color:#fbbf24}
+  .docshare{background:var(--card2); border:1px solid var(--line); color:var(--txt); width:34px;height:34px;border-radius:10px; font-size:15px; cursor:pointer; display:flex;align-items:center;justify-content:center}
+  .docshare:active{transform:scale(.94)}
+  .sides{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px}
+  .slot{
+    position:relative; border-radius:12px; overflow:hidden; aspect-ratio:1.58/1;
+    background:var(--card2); border:1px dashed var(--line);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .slot.filled{border-style:solid; cursor:pointer}
+  .slot img.photo{width:100%; height:100%; object-fit:cover; display:block}
+  .slot .empty{
+    text-align:center; padding:10px; color:var(--muted); font-size:12px; line-height:1.4;
+    display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer;
+  }
+  .slot .empty .plus{font-size:26px; color:var(--accent)}
+  .pdfcard{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; width:100%; height:100%; background:linear-gradient(180deg,#334155,#1e293b); color:#e2e8f0; cursor:pointer}
+  .pdfcard .pdficon{font-size:34px}
+  .pdfcard span:last-child{font-size:12px; letter-spacing:1px; color:#cbd5e1}
+  .pdfbadge{position:absolute; top:6px; left:6px; background:#dc2626; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:6px; letter-spacing:.5px}
+  .slot .empty b{color:var(--txt); font-size:12.5px; text-transform:capitalize}
+  .side-label{
+    position:absolute; left:6px; bottom:6px; background:rgba(15,23,42,.8);
+    padding:2px 7px; border-radius:6px; font-size:10.5px; text-transform:capitalize;
+  }
+  .slot .edit{
+    position:absolute; top:6px; right:6px; background:rgba(15,23,42,.85); color:#fff;
+    border:none; width:28px;height:28px;border-radius:8px; font-size:14px; cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* Lightbox */
+  .lightbox{
+    position:fixed; inset:0; background:rgba(0,0,0,.96); z-index:50;
+    display:none; align-items:center; justify-content:center; flex-direction:column;
+  }
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:100%; max-height:74vh; object-fit:contain; touch-action:pinch-zoom}
+  .lightbox .lb-bar{position:absolute; top:0; left:0; right:0; display:flex; justify-content:space-between; padding:16px}
+  .lightbox .lb-cap{position:absolute; bottom:88px; color:#cbd5e1; font-size:14px; text-transform:capitalize; text-align:center; width:100%}
+  .lightbox .lb-actions{position:absolute; bottom:20px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; padding:0 12px; max-width:100%}
+  .btn{
+    background:var(--card2); color:var(--txt); border:1px solid var(--line);
+    padding:11px 16px; border-radius:12px; font-size:14px; cursor:pointer; display:inline-flex; gap:7px; align-items:center;
+  }
+  .btn.danger{color:#fca5a5; border-color:#7f1d1d}
+  .btn:active{transform:scale(.96)}
+
+  /* Recortador */
+  .cropper{position:fixed; inset:0; background:rgba(0,0,0,.96); z-index:55; display:none; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:16px}
+  .cropper.open{display:flex}
+  .crop-top{color:#cbd5e1; font-size:14px}
+  .crop-stage{position:relative; display:inline-block; touch-action:none; -webkit-user-select:none; user-select:none}
+  .crop-stage img{display:block; max-width:92vw; max-height:64vh}
+  .crop-box{position:absolute; border:2px solid var(--accent); box-shadow:0 0 0 9999px rgba(0,0,0,.55); box-sizing:border-box; cursor:move}
+  .crop-box .ch{position:absolute; width:20px;height:20px;background:var(--accent);border-radius:50%; border:2px solid #fff}
+  .crop-box .tl{left:-11px;top:-11px} .crop-box .tr{right:-11px;top:-11px}
+  .crop-box .bl{left:-11px;bottom:-11px} .crop-box .br{right:-11px;bottom:-11px}
+  .crop-actions{display:flex; gap:12px}
+
+  /* PIN lock */
+  .lock{
+    position:fixed; inset:0; background:var(--bg); z-index:60;
+    display:none; flex-direction:column; align-items:center; justify-content:center; gap:20px; padding:24px;
+  }
+  .lock.open{display:flex}
+  .lock .logo{width:64px;height:64px}
+  .lock h2{margin:0; font-size:20px}
+  .pin-dots{display:flex; gap:14px}
+  .pin-dots i{width:14px;height:14px;border-radius:50%; background:var(--card2); border:1px solid var(--line)}
+  .pin-dots i.on{background:var(--accent); border-color:var(--accent)}
+  .pad{display:grid; grid-template-columns:repeat(3,72px); gap:14px}
+  .pad button{
+    width:72px;height:72px;border-radius:50%; font-size:24px; background:var(--card); color:var(--txt);
+    border:1px solid var(--line); cursor:pointer;
+  }
+  .pad button:active{background:var(--card2)}
+  .pad button.blank{background:none; border:none; cursor:default}
+  .lock .err{color:var(--danger); font-size:14px; min-height:18px}
+  .lock .hint{color:var(--muted); font-size:12px}
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--card2); border:1px solid var(--line); color:var(--txt);
+    padding:12px 18px; border-radius:12px; z-index:80; font-size:14px; opacity:0; transition:.25s; pointer-events:none;
+  }
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<header>
+  <img class="logo" src="icon.svg" alt="">
+  <h1>Documentación</h1>
+  <button class="icon-btn" id="exportBtn" title="Exportar copia (todas las fotos en un archivo)">⬇</button>
+  <button class="icon-btn" id="importBtn" title="Importar copia">⬆</button>
+  <button class="icon-btn" id="lockBtn" title="Bloquear">🔒</button>
+</header>
+
+<main id="view"></main>
+
+<!-- input oculto para elegir/hacer foto -->
+<input type="file" id="fileInput" accept="image/*,application/pdf" style="display:none">
+<!-- input oculto para importar copia -->
+<input type="file" id="importInput" accept="application/json,.json" style="display:none">
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <div class="lb-bar">
+    <button class="icon-btn" id="lbClose">✕</button>
+    <span></span>
+  </div>
+  <img id="lbImg" src="" alt="">
+  <iframe id="lbFrame" style="display:none;width:92vw;height:72vh;border:0;background:#fff;border-radius:8px"></iframe>
+  <div class="lb-cap" id="lbCap"></div>
+  <div class="lb-actions" id="lbActions"></div>
+</div>
+
+<!-- Recortador -->
+<div class="cropper" id="cropper">
+  <div class="crop-top">Arrastra el marco para encuadrar</div>
+  <div class="crop-stage" id="cropStage">
+    <img id="cropImg" alt="">
+    <div class="crop-box" id="cropBox"><i class="ch tl"></i><i class="ch tr"></i><i class="ch bl"></i><i class="ch br"></i></div>
+  </div>
+  <div class="crop-actions">
+    <button class="btn" id="cropCancel">Cancelar</button>
+    <button class="btn" id="cropApply">✂ Recortar</button>
+  </div>
+</div>
+
+<!-- PIN lock -->
+<div class="lock" id="lockScreen">
+  <img class="logo" src="icon.svg" alt="">
+  <h2 id="lockTitle">Introduce tu PIN</h2>
+  <div class="pin-dots" id="pinDots"></div>
+  <div class="err" id="pinErr"></div>
+  <div class="pad" id="pad"></div>
+  <div class="hint">App local · nada se sube a internet</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+/* ============================================================
+   DOCUMENTACIÓN — documentos por persona, foto por frente/reverso.
+   Las fotos se añaden DESDE LA APP (cámara en móvil o archivo en PC)
+   y se guardan en el navegador de ESTE dispositivo (IndexedDB).
+   También lee fotos puestas a mano en la carpeta  img/.
+   Botón ⬇ = guarda una copia de todas con el nombre correcto
+   (útil para copiar a la carpeta img/ y subir al repo privado).
+   ============================================================ */
+
+// ---------- Personas y documentos ----------
+const PEOPLE = [
+  { id:'andres', name:'Andrés', role:'Adulto', color:'#38bdf8', docs:[
+    { id:'dni',       label:'DNI',                     emoji:'🪪', sides:['frente','reverso'] },
+    { id:'conducir',  label:'Carnet de conducir',      emoji:'🚗', sides:['frente','reverso'] },
+    { id:'pasaporte', label:'Pasaporte',               emoji:'🛂', sides:['unico'] },
+    { id:'sanitaria', label:'Tarjeta sanitaria',       emoji:'💊', sides:['frente','reverso'] },
+    { id:'adeslas',   label:'Tarjeta Adeslas',         emoji:'➕', sides:['frente','reverso'] },
+    { id:'libro',     label:'Libro de familia',        emoji:'📖', sides:['pagina-1','pagina-2','pagina-3'] },
+    { id:'numerosa',  label:'Familia numerosa',        emoji:'👨‍👩‍👧‍👦', sides:['unico'] },
+  ]},
+  { id:'leo',  name:'Leo',  role:'12 años', color:'#a78bfa', docs: hijoDocs() },
+  { id:'miah', name:'Miah', role:'11 años', color:'#f472b6', docs: hijoDocs() },
+  { id:'alex', name:'Alex', role:'9 años',  color:'#34d399', docs: hijoDocs() },
+];
+function hijoDocs(){
+  return [
+    { id:'dni',        label:'DNI',                     emoji:'🪪', sides:['frente','reverso'] },
+    { id:'pasaporte',  label:'Pasaporte',               emoji:'🛂', sides:['unico'] },
+    { id:'sanitaria',  label:'Tarjeta sanitaria',       emoji:'💊', sides:['frente','reverso'] },
+    { id:'adeslas',    label:'Tarjeta Adeslas',         emoji:'➕', sides:['frente','reverso'] },
+    { id:'numerosa',   label:'Familia numerosa',        emoji:'👨‍👩‍👧‍👦', sides:['unico'] },
+    { id:'vacunas',    label:'Cartilla de vacunación',  emoji:'💉', sides:['unico'] },
+    { id:'fotocole',   label:'Foto para el cole',       emoji:'📷', sides:['unico'] },
+    { id:'xics',       label:'Carnet Xics',             emoji:'🎫', sides:['unico'] },
+  ];
+}
+const EXTS = ['jpg','jpeg','png','webp','JPG','JPEG','PNG'];
+function baseName(pid,did,side){ return pid+'_'+did+'_'+side; }
+function prettySide(s){ return s.replace('unico','Documento').replace('-',' '); }
+
+// ---------- IndexedDB (fotos guardadas en este dispositivo) ----------
+let _db=null;
+function idb(){
+  return new Promise((res,rej)=>{
+    if(_db) return res(_db);
+    const r = indexedDB.open('documentacion',1);
+    r.onupgradeneeded = ()=> r.result.createObjectStore('fotos');
+    r.onsuccess = ()=>{ _db=r.result; res(_db); };
+    r.onerror = ()=> rej(r.error);
+  });
+}
+async function idbPut(k,blob){ const db=await idb(); return new Promise((res,rej)=>{const t=db.transaction('fotos','readwrite');t.objectStore('fotos').put(blob,k);t.oncomplete=res;t.onerror=()=>rej(t.error);}); }
+async function idbGet(k){ const db=await idb(); return new Promise((res)=>{const t=db.transaction('fotos','readonly');const q=t.objectStore('fotos').get(k);q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null);}); }
+async function idbDel(k){ const db=await idb(); return new Promise((res)=>{const t=db.transaction('fotos','readwrite');t.objectStore('fotos').delete(k);t.oncomplete=res;t.onerror=res;}); }
+async function idbKeys(){ const db=await idb(); return new Promise((res)=>{const t=db.transaction('fotos','readonly');const q=t.objectStore('fotos').getAllKeys();q.onsuccess=()=>res(q.result||[]);q.onerror=()=>res([]);}); }
+
+// ---------- PDF: miniatura de la primera página ----------
+if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }
+const _thumbCache={};
+async function pdfThumb(url){
+  if(!window.pdfjsLib) return null;
+  if(_thumbCache[url]) return _thumbCache[url];
+  try{
+    const pdf=await pdfjsLib.getDocument(url).promise;
+    const page=await pdf.getPage(1);
+    const base=page.getViewport({scale:1});
+    const vp=page.getViewport({scale:Math.min(700/base.width, 2)});
+    const c=document.createElement('canvas'); c.width=vp.width; c.height=vp.height;
+    await page.render({canvasContext:c.getContext('2d'), viewport:vp}).promise;
+    const data=c.toDataURL('image/jpeg',0.8);
+    _thumbCache[url]=data; return data;
+  }catch(e){ return null; }
+}
+
+// ---------- Resolver imagen: IndexedDB primero, luego carpeta img/ ----------
+async function resolveImage(bn){
+  const blob = await idbGet(bn);
+  if(blob) return { url: URL.createObjectURL(blob), source:'idb', isPdf: blob.type==='application/pdf' };
+  const fileUrl = await tryFile(bn);
+  if(fileUrl) return { url:fileUrl, source:'file', isPdf: /\.pdf$/i.test(fileUrl) };
+  return null;
+}
+function tryFile(bn){
+  return new Promise((res)=>{
+    let i=0;
+    function tryPdf(){
+      const pdfs=['pdf','PDF']; let j=0;
+      (function nx(){
+        if(j>=pdfs.length) return res(null);
+        const url='img/'+bn+'.'+pdfs[j++];
+        fetch(url).then(r=>{ if(r && r.ok) res(url); else nx(); }).catch(nx);
+      })();
+    }
+    (function next(){
+      if(i>=EXTS.length) return tryPdf();
+      const url='img/'+bn+'.'+EXTS[i++];
+      const p=new Image();
+      p.onload=()=>res(url); p.onerror=next; p.src=url;
+    })();
+  });
+}
+
+// ---------- Comprimir foto antes de guardar ----------
+function compress(file, maxDim=1600, quality=0.85){
+  return new Promise((res)=>{
+    const img=new Image();
+    img.onload=()=>{
+      let {width:w,height:h}=img;
+      if(Math.max(w,h)>maxDim){ const r=maxDim/Math.max(w,h); w=Math.round(w*r); h=Math.round(h*r); }
+      const c=document.createElement('canvas'); c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      c.toBlob(b=>res(b), 'image/jpeg', quality);
+    };
+    img.onerror=()=>res(file);
+    img.src=URL.createObjectURL(file);
+  });
+}
+
+// ---------- Elegir/hacer foto para un hueco ----------
+const fileInput = document.getElementById('fileInput');
+let pendingKey=null, pendingMeta=null;
+function pickPhoto(bn, meta){
+  pendingKey=bn; pendingMeta=meta;
+  fileInput.value='';
+  fileInput.click();
+}
+fileInput.onchange = async ()=>{
+  const f = fileInput.files[0];
+  if(!f || !pendingKey) return;
+  toast('Guardando…');
+  const isPdf = f.type==='application/pdf' || /\.pdf$/i.test(f.name);
+  const blob = isPdf ? f : await compress(f);
+  await idbPut(pendingKey, blob);
+  toast(isPdf ? 'PDF guardado ✔' : 'Foto guardada ✔');
+  render();
+};
+
+// ---------- Router ----------
+let currentPerson=null;
+const viewEl=document.getElementById('view');
+function render(){ currentPerson ? renderPerson(currentPerson) : renderHome(); }
+function goHome(){ currentPerson=null; window.scrollTo(0,0); render(); }
+
+async function renderHome(){
+  viewEl.innerHTML='<p class="subtitle">Toda tu documentación importante, a mano y por persona. Añade cada foto desde el móvil o el ordenador.</p><div class="grid" id="grid"></div>';
+  const grid=document.getElementById('grid');
+  const keys=new Set(await idbKeys());
+  for(const p of PEOPLE){
+    const slots=[]; p.docs.forEach(d=>d.sides.forEach(s=>slots.push(baseName(p.id,d.id,s))));
+    const card=document.createElement('button');
+    card.className='person-card';
+    card.innerHTML='<div class="avatar" style="background:'+p.color+'">'+p.name[0]+'</div>'
+      +'<div><h2>'+p.name+'</h2><div class="role">'+p.role+'</div></div>'
+      +'<div class="progress"><div class="bar"><span style="width:0%"></span></div><small>…</small></div>';
+    card.onclick=()=>{ currentPerson=p; window.scrollTo(0,0); render(); };
+    grid.appendChild(card);
+    // progreso
+    let done=0, checked=0;
+    slots.forEach(async bn=>{
+      let ok = keys.has(bn) || !!(await tryFile(bn));
+      if(ok) done++;
+      if(++checked===slots.length){
+        card.querySelector('.bar > span').style.width=Math.round(done/slots.length*100)+'%';
+        card.querySelector('.progress small').textContent=done+' de '+slots.length+' fotos';
+      }
+    });
+  }
+}
+
+function renderPerson(p){
+  let html='<button class="back" onclick="goHome()">‹ Personas</button>'
+    +'<div class="doc-head" style="margin-bottom:4px"><div class="avatar" style="width:40px;height:40px;font-size:18px;background:'+p.color+'">'+p.name[0]+'</div><h3 style="font-size:20px">'+p.name+'</h3></div>'
+    +'<p class="subtitle">'+p.role+' · toca un hueco para añadir foto o PDF</p>';
+  p.docs.forEach(d=>{
+    html+='<div class="doc"><div class="doc-head"><span class="doc-emoji">'+d.emoji+'</span><h3>'+d.label+'</h3><span class="chip miss" id="chip-'+d.id+'">…</span><button class="docshare" id="share-'+d.id+'" title="Compartir">📤</button></div><div class="sides">';
+    d.sides.forEach(side=>{
+      const bn=baseName(p.id,d.id,side);
+      html+='<div class="slot" id="slot-'+bn+'"><div class="empty"><span class="plus">＋</span><b>'+prettySide(side)+'</b><span>Foto o PDF</span></div><div class="side-label">'+prettySide(side)+'</div></div>';
+    });
+    html+='</div></div>';
+  });
+  viewEl.innerHTML=html;
+
+  p.docs.forEach(d=>{
+    const bns=d.sides.map(s=>baseName(p.id,d.id,s));
+    const sb=document.getElementById('share-'+d.id); if(sb) sb.onclick=()=>shareDocs(bns, p.name+' · '+d.label);
+    let done=0;
+    d.sides.forEach(async side=>{
+      const bn=baseName(p.id,d.id,side);
+      const slot=document.getElementById('slot-'+bn);
+      const meta={person:p.name, doc:d.label, side, bn};
+      const empty=slot.querySelector('.empty');
+      if(empty) empty.onclick=()=>pickPhoto(bn, meta);
+      const r=await resolveImage(bn);
+      if(r){
+        slot.classList.add('filled');
+        const label='<div class="side-label">'+prettySide(side)+'</div><button class="edit" title="Cambiar">✎</button>';
+        const wire=(inner, mainSel)=>{
+          slot.innerHTML=inner+label;
+          slot.querySelector(mainSel).onclick=()=>openLightbox(r, meta);
+          slot.querySelector('.edit').onclick=(e)=>{ e.stopPropagation(); pickPhoto(bn, meta); };
+        };
+        if(r.isPdf){
+          wire('<div class="pdfcard"><span class="pdficon">📄</span><span>PDF</span></div>', '.pdfcard');
+          pdfThumb(r.url).then(t=>{ if(t) wire('<img class="photo" src="'+t+'" alt=""><span class="pdfbadge">PDF</span>', '.photo'); });
+        } else {
+          wire('<img class="photo" src="'+r.url+'" alt="">', '.photo');
+        }
+        done++;
+      }
+      updateChip(d, done);
+    });
+  });
+}
+function updateChip(d,done){
+  const chip=document.getElementById('chip-'+d.id); if(!chip) return;
+  if(done>=d.sides.length){ chip.className='chip ok'; chip.textContent='Completo'; }
+  else { chip.className='chip miss'; chip.textContent=done+'/'+d.sides.length; }
+}
+
+// ---------- Lightbox ----------
+const lb=document.getElementById('lightbox');
+function closeLb(){ lb.classList.remove('open'); const fr=document.getElementById('lbFrame'); fr.src='about:blank'; fr.style.display='none'; }
+document.getElementById('lbClose').onclick=closeLb;
+lb.onclick=(e)=>{ if(e.target===lb) closeLb(); };
+function openLightbox(r, meta){
+  const imgEl=document.getElementById('lbImg'), frame=document.getElementById('lbFrame');
+  if(r.isPdf){ imgEl.style.display='none'; imgEl.src=''; frame.style.display='block'; frame.src=r.url; }
+  else { frame.style.display='none'; frame.src='about:blank'; imgEl.style.display='block'; imgEl.src=r.url; }
+  document.getElementById('lbCap').textContent=meta.person+' · '+meta.doc+' · '+prettySide(meta.side);
+  const act=document.getElementById('lbActions'); act.innerHTML='';
+  function addBtn(label, cls, fn){ const b=document.createElement('button'); b.className='btn'+(cls?' '+cls:''); b.innerHTML=label; b.onclick=fn; act.appendChild(b); return b; }
+  if(!r.isPdf){
+    addBtn('↻ Girar', '', async()=>{ await transformPhoto(meta.bn,'rot'); await refreshLightbox(meta); });
+    addBtn('⇋ Voltear', '', async()=>{ await transformPhoto(meta.bn,'flip'); await refreshLightbox(meta); });
+    addBtn('✂ Recortar', '', ()=>{ closeLb(); openCropper(meta.bn, meta); });
+  }
+  addBtn('📤 Compartir', '', ()=>shareDocs([meta.bn], meta.person+' · '+meta.doc));
+  addBtn('✎ Cambiar', '', ()=>{ lb.classList.remove('open'); pickPhoto(meta.bn, meta); });
+  addBtn('⬇ Guardar copia', '', ()=>downloadOne(meta.bn));
+  addBtn('🗑 Eliminar', 'danger', async()=>{ if(confirm('¿Eliminar esta foto?')){ await idbDel(meta.bn); lb.classList.remove('open'); render(); toast('Foto eliminada'); } });
+  lb.classList.add('open');
+}
+// ---------- Girar / voltear una foto (se guarda corregida) ----------
+function blobToImg(blob){ return new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=URL.createObjectURL(blob); }); }
+async function transformPhoto(bn, op){
+  let blob=await idbGet(bn);
+  if(!blob){ const url=await tryFile(bn); if(!url) return; blob=await (await fetch(url)).blob(); }
+  const img=await blobToImg(blob);
+  const c=document.createElement('canvas'); const ctx=c.getContext('2d');
+  if(op==='rot'){ c.width=img.height; c.height=img.width; ctx.translate(c.width/2,c.height/2); ctx.rotate(Math.PI/2); ctx.drawImage(img,-img.width/2,-img.height/2); }
+  else { c.width=img.width; c.height=img.height; ctx.translate(c.width,0); ctx.scale(-1,1); ctx.drawImage(img,0,0); }
+  const nb=await new Promise(r=>c.toBlob(r,'image/jpeg',0.9));
+  await idbPut(bn, nb);
+}
+async function refreshLightbox(meta){ const r=await resolveImage(meta.bn); if(r) openLightbox(r, meta); render(); toast('Foto actualizada ✔'); }
+
+// ---------- Recortar foto ----------
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+let cropState=null;
+async function openCropper(bn, meta){
+  let blob=await idbGet(bn);
+  if(!blob){ const url=await tryFile(bn); if(!url) return; blob=await (await fetch(url)).blob(); }
+  if(blob.type==='application/pdf'){ toast('El recorte es solo para fotos'); return; }
+  const img=document.getElementById('cropImg');
+  img.onload=()=>{ initCropBox(); document.getElementById('cropper').classList.add('open'); };
+  img.src=URL.createObjectURL(blob);
+  cropState={bn, meta};
+}
+function cropBoxEl(){ return document.getElementById('cropBox'); }
+function setBox(x,y,w,h){ const b=cropBoxEl(); b.style.left=x+'px'; b.style.top=y+'px'; b.style.width=w+'px'; b.style.height=h+'px'; }
+function getBox(){ const b=cropBoxEl(); return {x:parseFloat(b.style.left)||0,y:parseFloat(b.style.top)||0,w:parseFloat(b.style.width)||0,h:parseFloat(b.style.height)||0}; }
+function initCropBox(){
+  const img=document.getElementById('cropImg');
+  const w=img.clientWidth, h=img.clientHeight;
+  const bw=Math.round(w*0.82), bh=Math.round(h*0.82);
+  setBox((w-bw)/2,(h-bh)/2,bw,bh);
+}
+(function initCropDrag(){
+  const stage=document.getElementById('cropStage');
+  let mode=null, corner=null, startP=null, startBox=null;
+  function bounds(){ const img=document.getElementById('cropImg'); return {w:img.clientWidth,h:img.clientHeight}; }
+  function point(e){ const r=stage.getBoundingClientRect(); const t=e.touches&&e.touches[0]; return {x:(t?t.clientX:e.clientX)-r.left, y:(t?t.clientY:e.clientY)-r.top}; }
+  function down(e){
+    startP=point(e); startBox=getBox();
+    const cls=e.target.className||'';
+    if(e.target.classList && e.target.classList.contains('ch')){ mode='resize'; corner=['tl','tr','bl','br'].find(c=>e.target.classList.contains(c)); }
+    else { mode='move'; }
+    e.preventDefault();
+  }
+  function move(e){
+    if(!mode) return;
+    const p=point(e), B=bounds(), min=40, b=startBox;
+    const dx=p.x-startP.x, dy=p.y-startP.y;
+    let {x,y,w,h}=b;
+    if(mode==='move'){ x=clamp(b.x+dx,0,B.w-b.w); y=clamp(b.y+dy,0,B.h-b.h); }
+    else {
+      if(corner.includes('l')){ const nx=clamp(b.x+dx,0,b.x+b.w-min); w=b.w+(b.x-nx); x=nx; }
+      if(corner.includes('r')){ w=clamp(b.w+dx,min,B.w-b.x); }
+      if(corner.includes('t')){ const ny=clamp(b.y+dy,0,b.y+b.h-min); h=b.h+(b.y-ny); y=ny; }
+      if(corner.includes('b')){ h=clamp(b.h+dy,min,B.h-b.y); }
+    }
+    setBox(x,y,w,h); e.preventDefault();
+  }
+  function up(){ mode=null; corner=null; }
+  stage.addEventListener('mousedown',down); stage.addEventListener('touchstart',down,{passive:false});
+  window.addEventListener('mousemove',move); window.addEventListener('touchmove',move,{passive:false});
+  window.addEventListener('mouseup',up); window.addEventListener('touchend',up);
+})();
+async function applyCrop(){
+  const img=document.getElementById('cropImg'); const box=getBox();
+  const sx=img.naturalWidth/img.clientWidth, sy=img.naturalHeight/img.clientHeight;
+  const c=document.createElement('canvas');
+  c.width=Math.max(1,Math.round(box.w*sx)); c.height=Math.max(1,Math.round(box.h*sy));
+  c.getContext('2d').drawImage(img, box.x*sx, box.y*sy, box.w*sx, box.h*sy, 0,0,c.width,c.height);
+  const nb=await new Promise(r=>c.toBlob(r,'image/jpeg',0.9));
+  await idbPut(cropState.bn, nb);
+  document.getElementById('cropper').classList.remove('open');
+  toast('Foto recortada ✔'); render();
+}
+document.getElementById('cropApply').onclick=applyCrop;
+document.getElementById('cropCancel').onclick=()=>document.getElementById('cropper').classList.remove('open');
+
+// ---------- Compartir (Mail, WhatsApp, etc.) ----------
+async function fileFor(bn){
+  let b=await idbGet(bn), type, ext;
+  if(b){ type=b.type||'image/jpeg'; }
+  else { const url=await tryFile(bn); if(!url) return null; b=await (await fetch(url)).blob(); type=b.type||(/\.pdf$/i.test(url)?'application/pdf':'image/jpeg'); }
+  ext = type==='application/pdf' ? 'pdf' : 'jpg';
+  return new File([b], bn+'.'+ext, {type});
+}
+async function shareDocs(bns, title){
+  const files=[];
+  for(const bn of bns){ const f=await fileFor(bn); if(f) files.push(f); }
+  if(!files.length){ toast('Aún no hay nada que compartir'); return; }
+  if(navigator.canShare && navigator.canShare({files})){
+    try{ await navigator.share({ files, title, text:title }); }
+    catch(e){ /* el usuario canceló */ }
+  } else {
+    toast('Este dispositivo no permite compartir; descargando…');
+    for(const bn of bns){ await downloadOne(bn); await new Promise(r=>setTimeout(r,300)); }
+  }
+}
+// ---------- Descargar copia con el nombre correcto ----------
+async function downloadOne(bn){
+  const blob=await idbGet(bn);
+  if(!blob){ toast('Este documento ya está en la carpeta img/'); return; }
+  const ext = blob.type==='application/pdf' ? 'pdf' : 'jpg';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=bn+'.'+ext;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+// ---------- Exportar / Importar TODA la copia en un solo archivo ----------
+function blobToDataURL(b){ return new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(b); }); }
+async function exportAll(){
+  const keys=await idbKeys();
+  if(!keys.length){ toast('Aún no hay fotos para exportar'); return; }
+  toast('Preparando copia…');
+  const fotos={};
+  for(const k of keys){ const b=await idbGet(k); if(b) fotos[k]=await blobToDataURL(b); }
+  const data=JSON.stringify({app:'documentacion', version:1, fecha:new Date().toISOString(), fotos});
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='documentacion-copia.json'; document.body.appendChild(a); a.click(); a.remove();
+  toast(Object.keys(fotos).length+' fotos exportadas ✔');
+}
+document.getElementById('exportBtn').onclick=exportAll;
+document.getElementById('importBtn').onclick=()=>document.getElementById('importInput').click();
+document.getElementById('importInput').onchange=async(e)=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{
+    const obj=JSON.parse(await f.text());
+    if(!obj || !obj.fotos) throw new Error('bad');
+    const keys=Object.keys(obj.fotos); let n=0;
+    toast('Importando…');
+    for(const k of keys){ const b=await (await fetch(obj.fotos[k])).blob(); await idbPut(k,b); n++; }
+    toast(n+' fotos importadas ✔'); render();
+  }catch(err){ toast('Ese archivo no es una copia válida'); }
+  e.target.value='';
+};
+
+// ---------- Toast ----------
+let toastT=null;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1800); }
+
+/* ============================================================
+   PIN opcional (deterrente ligero, no cifrado).
+   Activar: PIN_ACTIVO=true y cambia PIN_CODE (4 dígitos).
+   ============================================================ */
+const PIN_ACTIVO=false;
+const PIN_CODE='1234';
+const lockScreen=document.getElementById('lockScreen');
+const pinDots=document.getElementById('pinDots');
+const pinErr=document.getElementById('pinErr');
+let entered='';
+function buildLock(){
+  pinDots.innerHTML='<i></i><i></i><i></i><i></i>';
+  const pad=document.getElementById('pad'); pad.innerHTML='';
+  ['1','2','3','4','5','6','7','8','9','','0','⌫'].forEach(k=>{
+    const b=document.createElement('button');
+    if(k===''){ b.className='blank'; b.disabled=true; } else { b.textContent=k; b.onclick=()=>press(k); }
+    pad.appendChild(b);
+  });
+}
+function press(k){ if(k==='⌫') entered=entered.slice(0,-1); else if(entered.length<4) entered+=k; drawDots(); if(entered.length===4) setTimeout(check,120); }
+function drawDots(){ [...pinDots.children].forEach((d,i)=>d.classList.toggle('on', i<entered.length)); }
+function check(){ if(entered===PIN_CODE){ lockScreen.classList.remove('open'); entered=''; drawDots(); pinErr.textContent=''; } else { pinErr.textContent='PIN incorrecto'; entered=''; drawDots(); } }
+function lockNow(){ if(PIN_ACTIVO){ entered=''; drawDots(); pinErr.textContent=''; lockScreen.classList.add('open'); } }
+document.getElementById('lockBtn').onclick=()=>{ if(!PIN_ACTIVO){ alert('El PIN está desactivado.\nActívalo editando PIN_ACTIVO = true en el archivo.'); return; } lockNow(); };
+
+// ---------- Inicio ----------
+buildLock();
+render();
+if(PIN_ACTIVO) lockNow();
+</script>
+</body>
+</html>
