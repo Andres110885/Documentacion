@@ -23,34 +23,34 @@
     position:sticky; top:0; z-index:20;
     background:rgba(15,23,42,.92); backdrop-filter:blur(8px);
     border-bottom:1px solid var(--line);
-    display:flex; align-items:center; gap:10px; padding:14px 16px;
+    display:flex; align-items:center; gap:10px; padding:10px 16px;
   }
   header .logo{width:30px;height:30px;flex:0 0 auto}
-  header h1{font-size:19px; margin:0; font-weight:700; letter-spacing:.2px; flex:1}
+  header h1{font-size:17px; margin:0; font-weight:700; letter-spacing:.2px; flex:1}
   .icon-btn{
     background:var(--card2); border:1px solid var(--line); color:var(--txt);
     min-width:40px;height:40px;border-radius:12px; font-size:16px; cursor:pointer;
     display:flex; align-items:center; justify-content:center; padding:0 10px; gap:6px;
   }
   .icon-btn:active{transform:scale(.94)}
-  main{max-width:760px; margin:0 auto; padding:16px 16px 60px}
+  main{max-width:760px; margin:0 auto; padding:10px 16px 40px}
   .back{
     display:inline-flex; align-items:center; gap:6px; background:none; border:none;
     color:var(--accent); font-size:16px; cursor:pointer; padding:6px 0; margin-bottom:6px;
   }
-  .subtitle{color:var(--muted); font-size:14px; margin:2px 0 18px}
+  .subtitle{color:var(--muted); font-size:13px; margin:2px 0 10px}
 
   /* Home grid */
-  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
   .person-card{
-    background:var(--card); border:1px solid var(--line); border-radius:18px;
-    padding:18px 16px; cursor:pointer; text-align:left; color:inherit;
-    display:flex; flex-direction:column; gap:12px; transition:.15s;
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:12px 12px; cursor:pointer; text-align:left; color:inherit;
+    display:flex; flex-direction:column; gap:8px; transition:.15s;
   }
   .person-card:active{transform:scale(.97)}
   .avatar{
-    width:52px;height:52px;border-radius:50%; display:flex;align-items:center;justify-content:center;
-    font-size:22px; font-weight:700; color:#0f172a; overflow:hidden;
+    width:44px;height:44px;border-radius:50%; display:flex;align-items:center;justify-content:center;
+    font-size:18px; font-weight:700; color:#0f172a; overflow:hidden;
   }
   .avatar img{width:100%;height:100%;object-fit:cover}
   .person-card h2{margin:0; font-size:17px}
@@ -62,10 +62,10 @@
 
   /* Doc list */
   .doc{
-    background:var(--card); border:1px solid var(--line); border-radius:16px;
-    padding:14px; margin-bottom:14px;
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:11px; margin-bottom:10px;
   }
-  .doc-head{display:flex; align-items:center; gap:10px; margin-bottom:12px}
+  .doc-head{display:flex; align-items:center; gap:9px; margin-bottom:8px}
   .doc-head h3{margin:0; font-size:16px; flex:1}
   .doc-emoji{font-size:20px}
   .chip{font-size:11px; padding:3px 9px; border-radius:99px; font-weight:600}
@@ -73,7 +73,7 @@
   .chip.miss{background:rgba(245,158,11,.15); color:#fbbf24}
   .docshare{background:var(--card2); border:1px solid var(--line); color:var(--txt); width:34px;height:34px;border-radius:10px; font-size:15px; cursor:pointer; display:flex;align-items:center;justify-content:center}
   .docshare:active{transform:scale(.94)}
-  .sides{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px}
+  .sides{display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px}
   .slot{
     position:relative; border-radius:12px; overflow:hidden; aspect-ratio:1.58/1;
     background:var(--card2); border:1px dashed var(--line);
@@ -156,6 +156,44 @@
     padding:12px 18px; border-radius:12px; z-index:80; font-size:14px; opacity:0; transition:.25s; pointer-events:none;
   }
   .toast.show{opacity:1}
+
+  /* Pestanas: Documentacion / Usuarios */
+  .tabs{display:flex; gap:8px; padding:10px 16px 2px; max-width:760px; margin:0 auto}
+  .tab{
+    flex:1; background:var(--card); border:1px solid var(--line); color:var(--muted);
+    padding:9px 8px; border-radius:12px; font-size:13px; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .tab.active{background:var(--accent); color:#0f172a; border-color:var(--accent)}
+  .tab:active{transform:scale(.97)}
+
+  /* Usuarios / contrasenas */
+  .acc{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:11px; margin-bottom:9px}
+  .acc-head{display:flex; align-items:center; gap:9px; margin-bottom:6px}
+  .acc-head h3{margin:0; font-size:16px; flex:1; word-break:break-word}
+  .acc-emoji{font-size:20px}
+  .field{display:flex; align-items:center; gap:8px; background:var(--card2); border:1px solid var(--line); border-radius:9px; padding:6px 9px; margin-top:6px}
+  .field .lbl{color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.5px; min-width:58px}
+  .field .val{flex:1; font-size:15px; word-break:break-all; font-family:ui-monospace,Menlo,Consolas,monospace}
+  .field .mini{background:var(--card); border:1px solid var(--line); color:var(--txt); width:28px;height:28px;border-radius:8px; font-size:14px; cursor:pointer; display:flex;align-items:center;justify-content:center; flex:0 0 auto}
+  .field .mini:active{transform:scale(.92)}
+  .acc-note{color:var(--muted); font-size:13px; margin-top:8px}
+  .acc-actions{display:flex; gap:6px; margin-top:9px}
+  .acc-actions .btn{flex:1; justify-content:center}
+  .add-btn{width:100%; background:var(--card2); border:1px dashed var(--accent); color:var(--accent); padding:11px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; margin-top:4px}
+  .add-btn:active{transform:scale(.98)}
+
+  /* Modal alta/edicion de cuenta */
+  .umodal{position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:56; display:none; align-items:flex-end; justify-content:center}
+  .umodal.open{display:flex}
+  .ubox{background:var(--bg2); border:1px solid var(--line); border-radius:18px 18px 0 0; width:100%; max-width:760px; padding:20px 18px calc(20px + env(safe-area-inset-bottom)); max-height:92vh; overflow:auto}
+  @media(min-width:620px){ .umodal{align-items:center} .ubox{border-radius:18px} }
+  .ubox h3{margin:0 0 4px; font-size:18px}
+  .ubox label{display:block; color:var(--muted); font-size:12px; margin:14px 0 5px}
+  .ubox input{width:100%; background:var(--card); border:1px solid var(--line); color:var(--txt); border-radius:10px; padding:12px; font-size:16px}
+  .ubox .urow{display:flex; gap:10px; margin-top:18px}
+  .ubox .urow .btn{flex:1; justify-content:center}
+  .btn.primary{background:var(--accent); color:#0f172a; border-color:var(--accent); font-weight:600}
 </style>
 </head>
 <body>
@@ -167,6 +205,11 @@
   <button class="icon-btn" id="importBtn" title="Importar copia">⬆</button>
   <button class="icon-btn" id="lockBtn" title="Bloquear">🔒</button>
 </header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" id="tab-docs">&#128193; Documentaci&oacute;n</button>
+  <button class="tab" id="tab-users">&#128273; Usuarios</button>
+</nav>
 
 <main id="view"></main>
 
@@ -208,6 +251,25 @@
   <div class="err" id="pinErr"></div>
   <div class="pad" id="pad"></div>
   <div class="hint">App local · nada se sube a internet</div>
+</div>
+
+<!-- Modal alta/edicion de cuenta de usuario -->
+<div class="umodal" id="umodal">
+  <div class="ubox">
+    <h3 id="umTitle">Nueva cuenta</h3>
+    <label>Servicio o web</label>
+    <input id="umServicio" placeholder="Gmail, Instagram, colegio..." autocomplete="off">
+    <label>Usuario o email</label>
+    <input id="umUsuario" placeholder="usuario@..." autocomplete="off">
+    <label>Contrase&ntilde;a</label>
+    <input id="umClave" placeholder="Contrase&ntilde;a" autocomplete="off">
+    <label>Nota (opcional)</label>
+    <input id="umNota" placeholder="PIN, pregunta de seguridad..." autocomplete="off">
+    <div class="urow">
+      <button class="btn" id="umCancel">Cancelar</button>
+      <button class="btn primary" id="umSave">Guardar</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -353,9 +415,146 @@ fileInput.onchange = async ()=>{
 
 // ---------- Router ----------
 let currentPerson=null;
+let section='docs';
+let currentUser=null;
 const viewEl=document.getElementById('view');
-function render(){ currentPerson ? renderPerson(currentPerson) : renderHome(); }
+function render(){
+  if(section==='users'){ currentUser ? renderUserPerson(currentUser) : renderUsersHome(); }
+  else { currentPerson ? renderPerson(currentPerson) : renderHome(); }
+  syncTabs();
+}
 function goHome(){ currentPerson=null; window.scrollTo(0,0); render(); }
+function syncTabs(){
+  var td=document.getElementById('tab-docs'), tu=document.getElementById('tab-users');
+  if(td) td.classList.toggle('active', section==='docs');
+  if(tu) tu.classList.toggle('active', section==='users');
+}
+function setSection(s){ section=s; currentPerson=null; currentUser=null; window.scrollTo(0,0); render(); }
+document.getElementById('tab-docs').onclick=function(){ setSection('docs'); };
+document.getElementById('tab-users').onclick=function(){ setSection('users'); };
+
+// ============================================================
+//  USUARIOS - usuarios y contrasenas por persona.
+//  Se guardan SOLO en este dispositivo (localStorage). No se suben.
+// ============================================================
+const USERS_KEY='doc_usuarios_v1';
+function loadUsers(){ try{ return JSON.parse(localStorage.getItem(USERS_KEY))||{}; }catch(e){ return {}; } }
+function saveUsers(d){ try{ localStorage.setItem(USERS_KEY, JSON.stringify(d)); }catch(e){ toast('No se pudo guardar'); } }
+function accountsOf(pid){ const d=loadUsers(); return Array.isArray(d[pid]) ? d[pid] : []; }
+
+function renderUsersHome(){
+  const d=loadUsers();
+  viewEl.innerHTML='<p class="subtitle">Usuarios y contrase\u00f1as por persona. Se guardan solo en este dispositivo \u2014 no se suben a internet.</p><div class="grid" id="grid"></div>';
+  const grid=document.getElementById('grid');
+  PEOPLE.forEach(function(p){
+    const n=Array.isArray(d[p.id]) ? d[p.id].length : 0;
+    const card=document.createElement('button');
+    card.className='person-card';
+    card.innerHTML='<div class="avatar" style="background:'+p.color+'">'+p.name[0]+'</div>'
+      +'<div><h2>'+p.name+'</h2><div class="role">'+p.role+'</div></div>'
+      +'<div class="progress"><small>'+(n ? (n+' cuenta'+(n>1?'s':'')) : 'sin cuentas')+'</small></div>';
+    card.onclick=function(){ currentUser=p; window.scrollTo(0,0); render(); };
+    grid.appendChild(card);
+  });
+}
+
+function backUsers(){ currentUser=null; window.scrollTo(0,0); render(); }
+
+function renderUserPerson(p){
+  const accs=accountsOf(p.id);
+  viewEl.innerHTML='';
+  const back=document.createElement('button'); back.className='back'; back.textContent='\u2039 Usuarios'; back.onclick=backUsers; viewEl.appendChild(back);
+  const head=document.createElement('div'); head.className='doc-head'; head.style.marginBottom='4px';
+  head.innerHTML='<div class="avatar" style="width:40px;height:40px;font-size:18px;background:'+p.color+'">'+p.name[0]+'</div><h3 style="font-size:20px"></h3>';
+  head.querySelector('h3').textContent=p.name;
+  viewEl.appendChild(head);
+  const sub=document.createElement('p'); sub.className='subtitle';
+  sub.textContent=accs.length+' cuenta'+(accs.length===1?'':'s')+' guardada'+(accs.length===1?'':'s'); viewEl.appendChild(sub);
+  accs.forEach(function(a){
+    const card=document.createElement('div'); card.className='acc';
+    const h=document.createElement('div'); h.className='acc-head'; h.innerHTML='<span class="acc-emoji">\ud83d\udd11</span><h3></h3>';
+    h.querySelector('h3').textContent=a.servicio||'Cuenta'; card.appendChild(h);
+    if(a.usuario){
+      const f=document.createElement('div'); f.className='field';
+      f.innerHTML='<span class="lbl">Usuario</span>';
+      const v=document.createElement('span'); v.className='val'; v.textContent=a.usuario; f.appendChild(v);
+      const cb=document.createElement('button'); cb.className='mini'; cb.textContent='\ud83d\udccb'; cb.title='Copiar'; cb.onclick=function(){ copyText(a.usuario); }; f.appendChild(cb);
+      card.appendChild(f);
+    }
+    const pf=document.createElement('div'); pf.className='field'; pf.innerHTML='<span class="lbl">Clave</span>';
+    const pv=document.createElement('span'); pv.className='val'; pv.textContent='\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'; pf.appendChild(pv);
+    var shown=false;
+    const eye=document.createElement('button'); eye.className='mini'; eye.textContent='\ud83d\udc41'; eye.title='Ver/ocultar';
+    eye.onclick=function(){ shown=!shown; pv.textContent = shown ? (a.clave||'\u2014') : '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'; };
+    pf.appendChild(eye);
+    const pc=document.createElement('button'); pc.className='mini'; pc.textContent='\ud83d\udccb'; pc.title='Copiar'; pc.onclick=function(){ copyText(a.clave); }; pf.appendChild(pc);
+    card.appendChild(pf);
+    if(a.nota){ const note=document.createElement('div'); note.className='acc-note'; note.textContent='\ud83d\udcdd '+a.nota; card.appendChild(note); }
+    const acts=document.createElement('div'); acts.className='acc-actions';
+    const ed=document.createElement('button'); ed.className='btn'; ed.textContent='\u270e Editar'; ed.onclick=function(){ editAccount(p.id,a.id); };
+    const de=document.createElement('button'); de.className='btn danger'; de.textContent='\ud83d\uddd1 Eliminar'; de.onclick=function(){ deleteAccount(p.id,a.id); };
+    acts.appendChild(ed); acts.appendChild(de); card.appendChild(acts);
+    viewEl.appendChild(card);
+  });
+  const add=document.createElement('button'); add.className='add-btn'; add.textContent='\uff0b A\u00f1adir cuenta'; add.onclick=function(){ addAccount(p.id); };
+  viewEl.appendChild(add);
+}
+
+function copyText(t){
+  if(!t){ toast('Vac\u00edo'); return; }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){ toast('Copiado \u2714'); }).catch(function(){ toast('No se pudo copiar'); });
+  } else { toast('No se pudo copiar'); }
+}
+
+// ---------- Modal alta/edicion ----------
+let _editCtx=null;
+const umodal=document.getElementById('umodal');
+function openUModal(){ umodal.classList.add('open'); }
+function closeUModal(){ umodal.classList.remove('open'); _editCtx=null; }
+function addAccount(pid){
+  _editCtx={pid:pid, id:null};
+  document.getElementById('umTitle').textContent='Nueva cuenta';
+  document.getElementById('umServicio').value='';
+  document.getElementById('umUsuario').value='';
+  document.getElementById('umClave').value='';
+  document.getElementById('umNota').value='';
+  openUModal();
+}
+function editAccount(pid, id){
+  const a=accountsOf(pid).find(function(x){ return x.id===id; });
+  if(!a) return;
+  _editCtx={pid:pid, id:id};
+  document.getElementById('umTitle').textContent='Editar cuenta';
+  document.getElementById('umServicio').value=a.servicio||'';
+  document.getElementById('umUsuario').value=a.usuario||'';
+  document.getElementById('umClave').value=a.clave||'';
+  document.getElementById('umNota').value=a.nota||'';
+  openUModal();
+}
+function deleteAccount(pid, id){
+  if(!confirm('\u00bfEliminar esta cuenta?')) return;
+  const d=loadUsers(); d[pid]=(d[pid]||[]).filter(function(x){ return x.id!==id; }); saveUsers(d);
+  render(); toast('Cuenta eliminada');
+}
+document.getElementById('umCancel').onclick=closeUModal;
+umodal.onclick=function(e){ if(e.target===umodal) closeUModal(); };
+document.getElementById('umSave').onclick=function(){
+  if(!_editCtx) return;
+  const servicio=document.getElementById('umServicio').value.trim();
+  const usuario=document.getElementById('umUsuario').value.trim();
+  const clave=document.getElementById('umClave').value;
+  const nota=document.getElementById('umNota').value.trim();
+  if(!servicio && !usuario && !clave){ toast('Rellena alg\u00fan dato'); return; }
+  const d=loadUsers(); if(!Array.isArray(d[_editCtx.pid])) d[_editCtx.pid]=[];
+  if(_editCtx.id){
+    const a=d[_editCtx.pid].find(function(x){ return x.id===_editCtx.id; });
+    if(a){ a.servicio=servicio; a.usuario=usuario; a.clave=clave; a.nota=nota; }
+  } else {
+    d[_editCtx.pid].push({ id:'a'+Date.now()+Math.random().toString(36).slice(2,6), servicio:servicio, usuario:usuario, clave:clave, nota:nota });
+  }
+  saveUsers(d); closeUModal(); render(); toast('Guardado \u2714');
+};
 
 async function renderHome(){
   viewEl.innerHTML='<p class="subtitle">Toda tu documentación importante, a mano y por persona. Añade cada foto desde el móvil o el ordenador.</p><div class="grid" id="grid"></div>';
@@ -570,11 +769,13 @@ async function downloadOne(bn){
 function blobToDataURL(b){ return new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(b); }); }
 async function exportAll(){
   const keys=await idbKeys();
-  if(!keys.length){ toast('Aún no hay fotos para exportar'); return; }
+  const _users=loadUsers();
+  const _hasUsers=Object.values(_users).some(function(a){ return Array.isArray(a)&&a.length; });
+  if(!keys.length && !_hasUsers){ toast('Aún no hay nada para exportar'); return; }
   toast('Preparando copia…');
   const fotos={};
   for(const k of keys){ const b=await idbGet(k); if(b) fotos[k]=await blobToDataURL(b); }
-  const data=JSON.stringify({app:'documentacion', version:1, fecha:new Date().toISOString(), fotos});
+  const data=JSON.stringify({app:'documentacion', version:2, fecha:new Date().toISOString(), fotos, usuarios:_users});
   const blob=new Blob([data],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download='documentacion-copia.json'; document.body.appendChild(a); a.click(); a.remove();
@@ -586,10 +787,11 @@ document.getElementById('importInput').onchange=async(e)=>{
   const f=e.target.files[0]; if(!f) return;
   try{
     const obj=JSON.parse(await f.text());
-    if(!obj || !obj.fotos) throw new Error('bad');
-    const keys=Object.keys(obj.fotos); let n=0;
+    if(!obj || (!obj.fotos && !obj.usuarios)) throw new Error('bad');
+    let n=0;
     toast('Importando…');
-    for(const k of keys){ const b=await (await fetch(obj.fotos[k])).blob(); await idbPut(k,b); n++; }
+    if(obj.fotos){ const keys=Object.keys(obj.fotos); for(const k of keys){ const b=await (await fetch(obj.fotos[k])).blob(); await idbPut(k,b); n++; } }
+    if(obj.usuarios){ saveUsers(obj.usuarios); }
     toast(n+' fotos importadas ✔'); render();
   }catch(err){ toast('Ese archivo no es una copia válida'); }
   e.target.value='';
