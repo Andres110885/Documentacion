@@ -189,6 +189,9 @@
   .med-btns{display:flex; gap:6px; flex:0 0 auto}
   .med-btns .btn{padding:8px 10px; font-size:13px}
   .med-btns .btn.sq{width:36px; padding:8px 0; justify-content:center}
+  .medseg{display:flex; gap:6px; margin:6px 0 12px}
+  .medseg button{flex:1; background:var(--card); border:1px solid var(--line); color:var(--muted); padding:8px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer}
+  .medseg button.active{background:var(--accent); color:#0f172a; border-color:var(--accent)}
 
   /* Modal alta/edicion de cuenta */
   .umodal{position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:56; display:none; align-items:flex-end; justify-content:center}
@@ -444,6 +447,7 @@ let currentPerson=null;
 let section='docs';
 let currentUser=null;
 let currentMed=null;
+let medTab='informes';
 const viewEl=document.getElementById('view');
 function render(){
   if(section==='users'){ currentUser ? renderUserPerson(currentUser) : renderUsersHome(); }
@@ -457,7 +461,7 @@ function syncTabs(){
   ['tab-docs','tab-users','tab-med'].forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.remove('active'); });
   var act=document.getElementById(map[section]); if(act) act.classList.add('active');
 }
-function setSection(s){ section=s; currentPerson=null; currentUser=null; currentMed=null; window.scrollTo(0,0); render(); }
+function setSection(s){ section=s; currentPerson=null; currentUser=null; currentMed=null; medTab='informes'; window.scrollTo(0,0); render(); }
 document.getElementById('tab-docs').onclick=function(){ setSection('docs'); };
 document.getElementById('tab-users').onclick=function(){ setSection('users'); };
 document.getElementById('tab-med').onclick=function(){ setSection('medicos'); };
@@ -606,20 +610,26 @@ function renderMedicosHome(){
     card.innerHTML='<div class="avatar" style="background:'+p.color+'">'+p.name[0]+'</div>'
       +'<div><h2>'+p.name+'</h2><div class="role">'+p.role+'</div></div>'
       +'<div class="progress"><small>'+(n ? (n+' entrada'+(n>1?'s':'')) : 'sin entradas')+'</small></div>';
-    card.onclick=function(){ currentMed=p; window.scrollTo(0,0); render(); };
+    card.onclick=function(){ currentMed=p; medTab='informes'; window.scrollTo(0,0); render(); };
     grid.appendChild(card);
   });
 }
 function backMed(){ currentMed=null; window.scrollTo(0,0); render(); }
 
 function renderMedicoPerson(p){
-  const items=medOf(p.id).slice().sort(function(a,b){ return (b.fecha||'').localeCompare(a.fecha||''); });
+  const all=medOf(p.id);
+  const isRec=function(m){ return m.tipo==='receta'; };
+  const recCount=all.filter(isRec).length, infCount=all.length-recCount;
+  const items=(medTab==='recetas'?all.filter(isRec):all.filter(function(m){ return !isRec(m); })).slice().sort(function(a,b){ return (b.fecha||'').localeCompare(a.fecha||''); });
   viewEl.innerHTML='';
   const back=document.createElement('button'); back.className='back'; back.textContent='\u2039 M\u00e9dicos'; back.onclick=backMed; viewEl.appendChild(back);
   const head=document.createElement('div'); head.className='doc-head'; head.style.marginBottom='4px';
   head.innerHTML='<div class="avatar" style="width:40px;height:40px;font-size:18px;background:'+p.color+'">'+p.name[0]+'</div><h3 style="font-size:20px"></h3>';
   head.querySelector('h3').textContent=p.name; viewEl.appendChild(head);
-  const sub=document.createElement('p'); sub.className='subtitle'; sub.textContent=items.length+' entrada'+(items.length===1?'':'s'); viewEl.appendChild(sub);
+  const seg=document.createElement('div'); seg.className='medseg';
+  const bI=document.createElement('button'); bI.textContent='\ud83d\udcc4 Informes ('+infCount+')'; if(medTab!=='recetas') bI.className='active'; bI.onclick=function(){ medTab='informes'; render(); };
+  const bR=document.createElement('button'); bR.textContent='\ud83d\udc8a Recetas ('+recCount+')'; if(medTab==='recetas') bR.className='active'; bR.onclick=function(){ medTab='recetas'; render(); };
+  seg.appendChild(bI); seg.appendChild(bR); viewEl.appendChild(seg);
   items.forEach(function(m){
     const card=document.createElement('div'); card.className='acc med-row';
     const info=document.createElement('div'); info.className='med-info';
@@ -634,7 +644,9 @@ function renderMedicoPerson(p){
     card.appendChild(info); card.appendChild(btns);
     viewEl.appendChild(card);
   });
-  const add=document.createElement('button'); add.className='add-btn'; add.textContent='\uff0b A\u00f1adir entrada'; add.onclick=function(){ addMed(p.id); };
+  const add=document.createElement('button'); add.className='add-btn';
+  add.textContent = medTab==='recetas' ? '\uff0b A\u00f1adir receta' : '\uff0b A\u00f1adir informe';
+  add.onclick=function(){ addMed(p.id, medTab==='recetas'?'receta':'informe'); };
   viewEl.appendChild(add);
 }
 
@@ -651,9 +663,9 @@ const mmodal=document.getElementById('mmodal');
 function openMModal(){ mmodal.classList.add('open'); }
 function closeMModal(){ mmodal.classList.remove('open'); _medCtx=null; document.getElementById('mmFile').value=''; }
 function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function addMed(pid){
-  _medCtx={pid:pid, id:null};
-  document.getElementById('mmTitle').textContent='Nueva entrada';
+function addMed(pid, tipo){
+  _medCtx={pid:pid, id:null, tipo:tipo||'informe'};
+  document.getElementById('mmTitle').textContent = (tipo==='receta') ? 'Nueva receta' : 'Nueva entrada';
   document.getElementById('mmTitulo').value='';
   document.getElementById('mmFecha').value=todayISO();
   document.getElementById('mmFile').value='';
@@ -662,8 +674,8 @@ function addMed(pid){
 }
 function editMed(pid, id){
   const m=medOf(pid).find(function(x){ return x.id===id; }); if(!m) return;
-  _medCtx={pid:pid, id:id};
-  document.getElementById('mmTitle').textContent='Editar entrada';
+  _medCtx={pid:pid, id:id, tipo:m.tipo||'informe'};
+  document.getElementById('mmTitle').textContent = (m.tipo==='receta') ? 'Editar receta' : 'Editar entrada';
   document.getElementById('mmTitulo').value=m.titulo||'';
   document.getElementById('mmFecha').value=m.fecha||'';
   document.getElementById('mmFile').value='';
@@ -698,7 +710,7 @@ document.getElementById('mmSave').onclick=async function(){
     const m=d[_medCtx.pid].find(function(x){ return x.id===id; });
     if(m){ m.titulo=titulo; m.fecha=fecha; m.hasDoc=hasDoc; }
   } else {
-    d[_medCtx.pid].push({ id:id, titulo:titulo, fecha:fecha, hasDoc:hasDoc });
+    d[_medCtx.pid].push({ id:id, titulo:titulo, fecha:fecha, hasDoc:hasDoc, tipo:(_medCtx.tipo||'informe') });
   }
   saveMed(d); closeMModal(); render(); toast('Guardado \u2714');
 };
@@ -941,7 +953,7 @@ document.getElementById('importInput').onchange=async(e)=>{
     toast('Importando…');
     if(obj.fotos){ const keys=Object.keys(obj.fotos); for(const k of keys){ const b=await (await fetch(obj.fotos[k])).blob(); await idbPut(k,b); n++; } }
     if(obj.usuarios){ const _cu=loadUsers(); Object.keys(obj.usuarios).forEach(function(k){ _cu[k]=obj.usuarios[k]; }); saveUsers(_cu); }
-    if(obj.medicos){ const _cm=loadMed(); Object.keys(obj.medicos).forEach(function(k){ _cm[k]=obj.medicos[k]; }); saveMed(_cm); }
+    if(obj.medicos){ const _cm=loadMed(); Object.keys(obj.medicos).forEach(function(pid){ var cur=Array.isArray(_cm[pid])?_cm[pid]:[]; (obj.medicos[pid]||[]).forEach(function(m){ var i=cur.findIndex(function(x){ return x.id===m.id; }); if(i>=0) cur[i]=m; else cur.push(m); }); _cm[pid]=cur; }); saveMed(_cm); }
     toast(n+' fotos importadas ✔'); render();
   }catch(err){ toast('Ese archivo no es una copia válida'); }
   e.target.value='';
