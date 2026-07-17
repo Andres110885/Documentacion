@@ -158,10 +158,10 @@
   .toast.show{opacity:1}
 
   /* Pestanas: Documentacion / Usuarios */
-  .tabs{display:flex; gap:8px; padding:10px 16px 2px; max-width:760px; margin:0 auto}
+  .tabs{display:flex; gap:6px; padding:10px 16px 2px; max-width:760px; margin:0 auto}
   .tab{
     flex:1; background:var(--card); border:1px solid var(--line); color:var(--muted);
-    padding:9px 8px; border-radius:12px; font-size:13px; font-weight:600; cursor:pointer;
+    padding:9px 5px; border-radius:12px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap;
     display:flex; align-items:center; justify-content:center; gap:6px;
   }
   .tab.active{background:var(--accent); color:#0f172a; border-color:var(--accent)}
@@ -209,6 +209,7 @@
 <nav class="tabs" id="tabs">
   <button class="tab active" id="tab-docs">&#128193; Documentaci&oacute;n</button>
   <button class="tab" id="tab-users">&#128273; Usuarios</button>
+  <button class="tab" id="tab-med">&#129658; M&eacute;dicos</button>
 </nav>
 
 <main id="view"></main>
@@ -268,6 +269,24 @@
     <div class="urow">
       <button class="btn" id="umCancel">Cancelar</button>
       <button class="btn primary" id="umSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal alta/edicion de entrada medica -->
+<div class="umodal" id="mmodal">
+  <div class="ubox">
+    <h3 id="mmTitle">Nueva entrada</h3>
+    <label>T&iacute;tulo</label>
+    <input id="mmTitulo" placeholder="Anal&iacute;tica, informe, receta..." autocomplete="off">
+    <label>Fecha</label>
+    <input id="mmFecha" type="date">
+    <label>Documento (foto o PDF)</label>
+    <input id="mmFile" type="file" accept="image/*,application/pdf">
+    <div id="mmActual" class="acc-note" style="display:none"></div>
+    <div class="urow">
+      <button class="btn" id="mmCancel">Cancelar</button>
+      <button class="btn primary" id="mmSave">Guardar</button>
     </div>
   </div>
 </div>
@@ -417,21 +436,24 @@ fileInput.onchange = async ()=>{
 let currentPerson=null;
 let section='docs';
 let currentUser=null;
+let currentMed=null;
 const viewEl=document.getElementById('view');
 function render(){
   if(section==='users'){ currentUser ? renderUserPerson(currentUser) : renderUsersHome(); }
+  else if(section==='medicos'){ currentMed ? renderMedicoPerson(currentMed) : renderMedicosHome(); }
   else { currentPerson ? renderPerson(currentPerson) : renderHome(); }
   syncTabs();
 }
 function goHome(){ currentPerson=null; window.scrollTo(0,0); render(); }
 function syncTabs(){
-  var td=document.getElementById('tab-docs'), tu=document.getElementById('tab-users');
-  if(td) td.classList.toggle('active', section==='docs');
-  if(tu) tu.classList.toggle('active', section==='users');
+  var map={docs:'tab-docs', users:'tab-users', medicos:'tab-med'};
+  ['tab-docs','tab-users','tab-med'].forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.remove('active'); });
+  var act=document.getElementById(map[section]); if(act) act.classList.add('active');
 }
-function setSection(s){ section=s; currentPerson=null; currentUser=null; window.scrollTo(0,0); render(); }
+function setSection(s){ section=s; currentPerson=null; currentUser=null; currentMed=null; window.scrollTo(0,0); render(); }
 document.getElementById('tab-docs').onclick=function(){ setSection('docs'); };
 document.getElementById('tab-users').onclick=function(){ setSection('users'); };
+document.getElementById('tab-med').onclick=function(){ setSection('medicos'); };
 
 // ============================================================
 //  USUARIOS - usuarios y contrasenas por persona.
@@ -554,6 +576,122 @@ document.getElementById('umSave').onclick=function(){
     d[_editCtx.pid].push({ id:'a'+Date.now()+Math.random().toString(36).slice(2,6), servicio:servicio, usuario:usuario, clave:clave, nota:nota });
   }
   saveUsers(d); closeUModal(); render(); toast('Guardado \u2714');
+};
+
+// ============================================================
+//  MEDICOS - entradas medicas por persona (titulo, fecha, documento).
+//  Metadatos en localStorage; el documento en IndexedDB (este dispositivo).
+// ============================================================
+const MED_KEY='doc_medicos_v1';
+function loadMed(){ try{ return JSON.parse(localStorage.getItem(MED_KEY))||{}; }catch(e){ return {}; } }
+function saveMed(d){ try{ localStorage.setItem(MED_KEY, JSON.stringify(d)); }catch(e){ toast('No se pudo guardar'); } }
+function medOf(pid){ const d=loadMed(); return Array.isArray(d[pid]) ? d[pid] : []; }
+function medKey(pid,id){ return 'med_'+pid+'_'+id; }
+function fmtFecha(f){ if(!f) return ''; const x=f.split('-'); return x.length===3 ? (x[2]+'/'+x[1]+'/'+x[0]) : f; }
+
+function renderMedicosHome(){
+  const d=loadMed();
+  viewEl.innerHTML='<p class="subtitle">Informes y documentos m\u00e9dicos por persona. Se guardan solo en este dispositivo \u2014 no se suben a internet.</p><div class="grid" id="grid"></div>';
+  const grid=document.getElementById('grid');
+  PEOPLE.forEach(function(p){
+    const n=Array.isArray(d[p.id]) ? d[p.id].length : 0;
+    const card=document.createElement('button'); card.className='person-card';
+    card.innerHTML='<div class="avatar" style="background:'+p.color+'">'+p.name[0]+'</div>'
+      +'<div><h2>'+p.name+'</h2><div class="role">'+p.role+'</div></div>'
+      +'<div class="progress"><small>'+(n ? (n+' entrada'+(n>1?'s':'')) : 'sin entradas')+'</small></div>';
+    card.onclick=function(){ currentMed=p; window.scrollTo(0,0); render(); };
+    grid.appendChild(card);
+  });
+}
+function backMed(){ currentMed=null; window.scrollTo(0,0); render(); }
+
+function renderMedicoPerson(p){
+  const items=medOf(p.id).slice().sort(function(a,b){ return (b.fecha||'').localeCompare(a.fecha||''); });
+  viewEl.innerHTML='';
+  const back=document.createElement('button'); back.className='back'; back.textContent='\u2039 M\u00e9dicos'; back.onclick=backMed; viewEl.appendChild(back);
+  const head=document.createElement('div'); head.className='doc-head'; head.style.marginBottom='4px';
+  head.innerHTML='<div class="avatar" style="width:40px;height:40px;font-size:18px;background:'+p.color+'">'+p.name[0]+'</div><h3 style="font-size:20px"></h3>';
+  head.querySelector('h3').textContent=p.name; viewEl.appendChild(head);
+  const sub=document.createElement('p'); sub.className='subtitle'; sub.textContent=items.length+' entrada'+(items.length===1?'':'s'); viewEl.appendChild(sub);
+  items.forEach(function(m){
+    const card=document.createElement('div'); card.className='acc';
+    const h=document.createElement('div'); h.className='acc-head'; h.innerHTML='<span class="acc-emoji">\ud83e\ude7a</span><h3></h3>';
+    h.querySelector('h3').textContent=m.titulo||'Entrada'; card.appendChild(h);
+    const meta=document.createElement('div'); meta.className='acc-note'; meta.textContent='\ud83d\udcc5 '+(fmtFecha(m.fecha)||'sin fecha')+(m.hasDoc?'':' \u00b7 sin documento'); card.appendChild(meta);
+    const acts=document.createElement('div'); acts.className='acc-actions';
+    const open=document.createElement('button'); open.className='btn'; open.textContent='\ud83d\udcc4 Ver'; open.onclick=function(){ openMedDoc(p, m); };
+    const ed=document.createElement('button'); ed.className='btn'; ed.textContent='\u270e'; ed.title='Editar'; ed.onclick=function(){ editMed(p.id, m.id); };
+    const de=document.createElement('button'); de.className='btn danger'; de.textContent='\ud83d\uddd1'; de.title='Eliminar'; de.onclick=function(){ deleteMed(p.id, m.id); };
+    acts.appendChild(open); acts.appendChild(ed); acts.appendChild(de); card.appendChild(acts);
+    viewEl.appendChild(card);
+  });
+  const add=document.createElement('button'); add.className='add-btn'; add.textContent='\uff0b A\u00f1adir entrada'; add.onclick=function(){ addMed(p.id); };
+  viewEl.appendChild(add);
+}
+
+async function openMedDoc(p, m){
+  const blob=await idbGet(medKey(p.id, m.id));
+  if(!blob){ toast('Esta entrada no tiene documento'); return; }
+  const r={ url:URL.createObjectURL(blob), source:'idb', isPdf: blob.type==='application/pdf' };
+  openLightbox(r, { person:p.name, doc:m.titulo||'M\u00e9dico', side:'unico', bn:medKey(p.id,m.id) });
+}
+
+// ---------- Modal medicos ----------
+let _medCtx=null;
+const mmodal=document.getElementById('mmodal');
+function openMModal(){ mmodal.classList.add('open'); }
+function closeMModal(){ mmodal.classList.remove('open'); _medCtx=null; document.getElementById('mmFile').value=''; }
+function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function addMed(pid){
+  _medCtx={pid:pid, id:null};
+  document.getElementById('mmTitle').textContent='Nueva entrada';
+  document.getElementById('mmTitulo').value='';
+  document.getElementById('mmFecha').value=todayISO();
+  document.getElementById('mmFile').value='';
+  document.getElementById('mmActual').style.display='none';
+  openMModal();
+}
+function editMed(pid, id){
+  const m=medOf(pid).find(function(x){ return x.id===id; }); if(!m) return;
+  _medCtx={pid:pid, id:id};
+  document.getElementById('mmTitle').textContent='Editar entrada';
+  document.getElementById('mmTitulo').value=m.titulo||'';
+  document.getElementById('mmFecha').value=m.fecha||'';
+  document.getElementById('mmFile').value='';
+  const act=document.getElementById('mmActual'); act.style.display='block';
+  act.textContent = m.hasDoc ? 'Ya hay un documento guardado. Elige uno nuevo solo si quieres reemplazarlo.' : 'Sin documento: puedes a\u00f1adir uno.';
+  openMModal();
+}
+async function deleteMed(pid, id){
+  if(!confirm('\u00bfEliminar esta entrada m\u00e9dica?')) return;
+  await idbDel(medKey(pid, id));
+  const d=loadMed(); d[pid]=(d[pid]||[]).filter(function(x){ return x.id!==id; }); saveMed(d);
+  render(); toast('Entrada eliminada');
+}
+document.getElementById('mmCancel').onclick=closeMModal;
+mmodal.onclick=function(e){ if(e.target===mmodal) closeMModal(); };
+document.getElementById('mmSave').onclick=async function(){
+  if(!_medCtx) return;
+  const titulo=document.getElementById('mmTitulo').value.trim();
+  const fecha=document.getElementById('mmFecha').value;
+  const file=document.getElementById('mmFile').files[0];
+  if(!titulo){ toast('Ponle un t\u00edtulo'); return; }
+  const d=loadMed(); if(!Array.isArray(d[_medCtx.pid])) d[_medCtx.pid]=[];
+  let id=_medCtx.id || ('m'+Date.now()+Math.random().toString(36).slice(2,6));
+  if(file){
+    toast('Guardando...');
+    const isPdf=file.type==='application/pdf' || /\.pdf$/i.test(file.name);
+    const blob=isPdf ? file : await compress(file);
+    await idbPut(medKey(_medCtx.pid, id), blob);
+  }
+  const hasDoc = !!file || (await idbGet(medKey(_medCtx.pid, id)))!=null;
+  if(_medCtx.id){
+    const m=d[_medCtx.pid].find(function(x){ return x.id===id; });
+    if(m){ m.titulo=titulo; m.fecha=fecha; m.hasDoc=hasDoc; }
+  } else {
+    d[_medCtx.pid].push({ id:id, titulo:titulo, fecha:fecha, hasDoc:hasDoc });
+  }
+  saveMed(d); closeMModal(); render(); toast('Guardado \u2714');
 };
 
 async function renderHome(){
@@ -770,12 +908,14 @@ function blobToDataURL(b){ return new Promise(r=>{ const fr=new FileReader(); fr
 async function exportAll(){
   const keys=await idbKeys();
   const _users=loadUsers();
+  const _med=loadMed();
   const _hasUsers=Object.values(_users).some(function(a){ return Array.isArray(a)&&a.length; });
-  if(!keys.length && !_hasUsers){ toast('Aún no hay nada para exportar'); return; }
+  const _hasMed=Object.values(_med).some(function(a){ return Array.isArray(a)&&a.length; });
+  if(!keys.length && !_hasUsers && !_hasMed){ toast('Aún no hay nada para exportar'); return; }
   toast('Preparando copia…');
   const fotos={};
   for(const k of keys){ const b=await idbGet(k); if(b) fotos[k]=await blobToDataURL(b); }
-  const data=JSON.stringify({app:'documentacion', version:2, fecha:new Date().toISOString(), fotos, usuarios:_users});
+  const data=JSON.stringify({app:'documentacion', version:3, fecha:new Date().toISOString(), fotos, usuarios:_users, medicos:_med});
   const blob=new Blob([data],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download='documentacion-copia.json'; document.body.appendChild(a); a.click(); a.remove();
@@ -787,11 +927,12 @@ document.getElementById('importInput').onchange=async(e)=>{
   const f=e.target.files[0]; if(!f) return;
   try{
     const obj=JSON.parse(await f.text());
-    if(!obj || (!obj.fotos && !obj.usuarios)) throw new Error('bad');
+    if(!obj || (!obj.fotos && !obj.usuarios && !obj.medicos)) throw new Error('bad');
     let n=0;
     toast('Importando…');
     if(obj.fotos){ const keys=Object.keys(obj.fotos); for(const k of keys){ const b=await (await fetch(obj.fotos[k])).blob(); await idbPut(k,b); n++; } }
     if(obj.usuarios){ saveUsers(obj.usuarios); }
+    if(obj.medicos){ saveMed(obj.medicos); }
     toast(n+' fotos importadas ✔'); render();
   }catch(err){ toast('Ese archivo no es una copia válida'); }
   e.target.value='';
