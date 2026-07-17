@@ -182,6 +182,13 @@
   .acc-actions .btn{flex:1; justify-content:center}
   .add-btn{width:100%; background:var(--card2); border:1px dashed var(--accent); color:var(--accent); padding:11px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; margin-top:4px}
   .add-btn:active{transform:scale(.98)}
+  .med-row{display:flex; align-items:center; gap:10px; padding:10px 12px}
+  .med-info{flex:1; min-width:0}
+  .med-title{font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .med-date{font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px}
+  .med-btns{display:flex; gap:6px; flex:0 0 auto}
+  .med-btns .btn{padding:8px 10px; font-size:13px}
+  .med-btns .btn.sq{width:36px; padding:8px 0; justify-content:center}
 
   /* Modal alta/edicion de cuenta */
   .umodal{position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:56; display:none; align-items:flex-end; justify-content:center}
@@ -614,15 +621,17 @@ function renderMedicoPerson(p){
   head.querySelector('h3').textContent=p.name; viewEl.appendChild(head);
   const sub=document.createElement('p'); sub.className='subtitle'; sub.textContent=items.length+' entrada'+(items.length===1?'':'s'); viewEl.appendChild(sub);
   items.forEach(function(m){
-    const card=document.createElement('div'); card.className='acc';
-    const h=document.createElement('div'); h.className='acc-head'; h.innerHTML='<span class="acc-emoji">\ud83e\ude7a</span><h3></h3>';
-    h.querySelector('h3').textContent=m.titulo||'Entrada'; card.appendChild(h);
-    const meta=document.createElement('div'); meta.className='acc-note'; meta.textContent='\ud83d\udcc5 '+(fmtFecha(m.fecha)||'sin fecha')+(m.hasDoc?'':' \u00b7 sin documento'); card.appendChild(meta);
-    const acts=document.createElement('div'); acts.className='acc-actions';
+    const card=document.createElement('div'); card.className='acc med-row';
+    const info=document.createElement('div'); info.className='med-info';
+    const tt=document.createElement('div'); tt.className='med-title'; tt.textContent='\ud83e\ude7a '+(m.titulo||'Entrada');
+    const dd=document.createElement('div'); dd.className='med-date'; dd.textContent='\ud83d\udcc5 '+(fmtFecha(m.fecha)||'sin fecha')+(m.hasDoc?'':' \u00b7 sin documento');
+    info.appendChild(tt); info.appendChild(dd);
+    const btns=document.createElement('div'); btns.className='med-btns';
     const open=document.createElement('button'); open.className='btn'; open.textContent='\ud83d\udcc4 Ver'; open.onclick=function(){ openMedDoc(p, m); };
-    const ed=document.createElement('button'); ed.className='btn'; ed.textContent='\u270e'; ed.title='Editar'; ed.onclick=function(){ editMed(p.id, m.id); };
-    const de=document.createElement('button'); de.className='btn danger'; de.textContent='\ud83d\uddd1'; de.title='Eliminar'; de.onclick=function(){ deleteMed(p.id, m.id); };
-    acts.appendChild(open); acts.appendChild(ed); acts.appendChild(de); card.appendChild(acts);
+    const ed=document.createElement('button'); ed.className='btn sq'; ed.textContent='\u270e'; ed.title='Editar'; ed.onclick=function(){ editMed(p.id, m.id); };
+    const de=document.createElement('button'); de.className='btn danger sq'; de.textContent='\ud83d\uddd1'; de.title='Eliminar'; de.onclick=function(){ deleteMed(p.id, m.id); };
+    btns.appendChild(open); btns.appendChild(ed); btns.appendChild(de);
+    card.appendChild(info); card.appendChild(btns);
     viewEl.appendChild(card);
   });
   const add=document.createElement('button'); add.className='add-btn'; add.textContent='\uff0b A\u00f1adir entrada'; add.onclick=function(){ addMed(p.id); };
