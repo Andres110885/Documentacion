@@ -931,8 +931,8 @@ document.getElementById('importInput').onchange=async(e)=>{
     let n=0;
     toast('Importando…');
     if(obj.fotos){ const keys=Object.keys(obj.fotos); for(const k of keys){ const b=await (await fetch(obj.fotos[k])).blob(); await idbPut(k,b); n++; } }
-    if(obj.usuarios){ saveUsers(obj.usuarios); }
-    if(obj.medicos){ saveMed(obj.medicos); }
+    if(obj.usuarios){ const _cu=loadUsers(); Object.keys(obj.usuarios).forEach(function(k){ _cu[k]=obj.usuarios[k]; }); saveUsers(_cu); }
+    if(obj.medicos){ const _cm=loadMed(); Object.keys(obj.medicos).forEach(function(k){ _cm[k]=obj.medicos[k]; }); saveMed(_cm); }
     toast(n+' fotos importadas ✔'); render();
   }catch(err){ toast('Ese archivo no es una copia válida'); }
   e.target.value='';
